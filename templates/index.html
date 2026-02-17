@@ -3,54 +3,69 @@
 <head>
     <title>Spectrum of communication</title>
     <style>
-        /* ЭТО СТИЛИ - чтобы было красиво */
+        body { font-family: Arial; margin: 0; }
+        .user-info {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: right;
+        }
+        .user-info a {
+            color: #ff9900;
+            text-decoration: none;
+            margin-left: 15px;
+        }
         .menu {
-            background-color: #333;  /* тёмный фон */
-            padding: 15px;           /* отступы */
-            text-align: center;      /* текст по центру */
+            background-color: #555;
+            padding: 15px;
+            text-align: center;
         }
         .menu a {
-            color: white;            /* белый текст */
-            text-decoration: none;   /* убрать подчёркивание */
-            margin: 15px;            /* отступы между ссылками */
-            padding: 8px 15px;       /* внутренние отступы */
+            color: white;
+            text-decoration: none;
+            margin: 15px;
+            padding: 8px 15px;
         }
         .menu a:hover {
-            background-color: #555;   /* цвет при наведении */
+            background-color: #777;
         }
         .content {
-            text-align: center;       /* текст по центру */
-            margin-top: 50px;         /* отступ сверху */
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
         }
         .logo {
-            width: 150px;             /* ширина логотипа */
-            height: 150px;            /* высота логотипа */
+            width: 150px;
+            height: 150px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ЭТО МЕНЮ -->
+    <!-- БЛОК С ИНФОРМАЦИЕЙ О ПОЛЬЗОВАТЕЛЕ -->
+    <div class="user-info">
+        {% if user.is_authenticated %}
+            <span>Привет, {{ user.name }}!</span>
+            <a href="/logout">Выйти</a>
+        {% else %}
+            <a href="/login/google">Войти через Google</a>
+        {% endif %}
+    </div>
+
+    <!-- МЕНЮ -->
     <div class="menu">
         <a href="/">Главная</a>
         <a href="/about">О нас</a>
         <a href="/contact">Контакты</a>
     </div>
 
-    <!-- ЭТО СОДЕРЖИМОЕ СТРАНИЦЫ -->
+    <!-- СОДЕРЖИМОЕ -->
     <div class="content">
         <img src="/static/logo.png" alt="Logo" class="logo">
         <h1>Spectrum of communication</h1>
-        <p>Добро пожаловать на главную страницу, мудак!</p>
-        <p>Здесь скоро будет чат.</p>
+        <p>Добро пожаловать, мудак!</p>
+        <p>Теперь можно входить через Google.</p>
     </div>
-
-    {% if user.is_authenticated %}
-    <p>Привет, {{ user.name }}!</p>
-    <a href="/logout">Выйти</a>
-{% else %}
-    <a href="/login/google">Войти через Google</a>
-{% endif %}
 
 </body>
 </html>
