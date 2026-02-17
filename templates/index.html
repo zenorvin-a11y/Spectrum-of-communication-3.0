@@ -2,10 +2,48 @@
 <html>
 <head>
     <title>Spectrum of communication</title>
+    <style>
+        /* ЭТО СТИЛИ - чтобы было красиво */
+        .menu {
+            background-color: #333;  /* тёмный фон */
+            padding: 15px;           /* отступы */
+            text-align: center;      /* текст по центру */
+        }
+        .menu a {
+            color: white;            /* белый текст */
+            text-decoration: none;   /* убрать подчёркивание */
+            margin: 15px;            /* отступы между ссылками */
+            padding: 8px 15px;       /* внутренние отступы */
+        }
+        .menu a:hover {
+            background-color: #555;   /* цвет при наведении */
+        }
+        .content {
+            text-align: center;       /* текст по центру */
+            margin-top: 50px;         /* отступ сверху */
+        }
+        .logo {
+            width: 150px;             /* ширина логотипа */
+            height: 150px;            /* высота логотипа */
+        }
+    </style>
 </head>
 <body>
-    <h1>Привет!</h1>
-    <p>Это мой первый сайт на Render, созданный прямо на GitHub.</p>
-    <p>Если ты это видишь, значит я гений.</p>
+
+    <!-- ЭТО МЕНЮ -->
+    <div class="menu">
+        <a href="/">Главная</a>
+        <a href="/about">О нас</a>
+        <a href="/contact">Контакты</a>
+    </div>
+
+    <!-- ЭТО СОДЕРЖИМОЕ СТРАНИЦЫ -->
+    <div class="content">
+        <img src="/static/logo.png" alt="Logo" class="logo">
+        <h1>Spectrum of communication</h1>
+        <p>Добро пожаловать на главную страницу, мудак!</p>
+        <p>Здесь скоро будет чат.</p>
+    </div>
+
 </body>
 </html>
