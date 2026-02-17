@@ -45,5 +45,12 @@
         <p>Здесь скоро будет чат.</p>
     </div>
 
+    {% if user.is_authenticated %}
+    <p>Привет, {{ user.name }}!</p>
+    <a href="/logout">Выйти</a>
+{% else %}
+    <a href="/login/google">Войти через Google</a>
+{% endif %}
+
 </body>
 </html>
