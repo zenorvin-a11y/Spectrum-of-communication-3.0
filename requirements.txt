@@ -1,7 +1,4 @@
 Flask==2.2.5
 gunicorn==20.1.0
-Flask-SQLAlchemy==2.5.1
-Flask-Login==0.6.2
-Flask-Dance==6.0.0
+Flask-Dance==7.0.0  # Более новая версия
 Werkzeug==2.2.3
-setuptools==69.0.0
