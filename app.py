@@ -1,31 +1,27 @@
+import os
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from flask_dance.contrib.google import make_google_blueprint, google
-import os
 
+# ========== СОЗДАЁМ ПРИЛОЖЕНИЕ ==========
 app = Flask(__name__)
-app.secret_key = "какой-то-сложный-ключ-мудак"  # Поменяй!
 
-# База данных
+# Секретный ключ для сессий (можно оставить так)
+app.secret_key = "sdflkjsdflkjsdflkjsdflkjsdflkj"
+
+# ========== НАСТРОЙКА БАЗЫ ДАННЫХ ==========
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
-# Регистрация через гугл
-blueprint = make_google_blueprint(
-    client_id="ТВОЙ_GOOGLE_CLIENT_ID",  # Получишь в консоли гугла
-    client_secret="ТВОЙ_GOOGLE_CLIENT_SECRET",  # Это тоже
-    scope=["profile", "email"]
-)
-app.register_blueprint(blueprint, url_prefix="/login")
-
-# Модель пользователя
+# ========== МОДЕЛЬ ПОЛЬЗОВАТЕЛЯ ==========
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     name = db.Column(db.String(100))
 
-# Настройка логина
+# ========== НАСТРОЙКА ВХОДА ==========
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -33,9 +29,26 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# ========== ВХОД ЧЕРЕЗ GOOGLE (ДАННЫЕ БЕРЁМ ИЗ ПЕРЕМЕННЫХ ОКРУЖЕНИЯ) ==========
+blueprint = make_google_blueprint(
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),          # Берётся из Render
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),  # Берётся из Render
+    scope=["profile", "email"]
+)
+app.register_blueprint(blueprint, url_prefix="/login")
+
+# ========== МАРШРУТЫ ==========
 @app.route('/')
 def home():
     return render_template('index.html', user=current_user)
+
+@app.route('/about')
+def about():
+    return render_template('about.html', user=current_user)
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html', user=current_user)
 
 @app.route('/login/google')
 def google_login():
@@ -62,7 +75,11 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+# ========== СОЗДАНИЕ БАЗЫ ДАННЫХ ==========
+with app.app_context():
+    db.create_all()
+
+# ========== ЗАПУСК ==========
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Создаст базу данных
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
