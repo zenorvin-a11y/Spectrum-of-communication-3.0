@@ -2,13 +2,12 @@ import os
 import sys
 from flask import Flask, render_template, redirect, url_for, request
 
-print(f"=== СПЕКТР ОБЩЕНИЯ === Версия 2.0")
+print(f"=== СПЕКТР ОБЩЕНИЯ === Версия 3.0 (Черно-голубая)")
 print(f"Python: {sys.version.split()[0]}")
 
-# Импорт Flask-Dance с защитой
+# Импорт Flask-Dance
 try:
     from flask_dance.contrib.google import make_google_blueprint, google
-    from flask_dance.consumer import oauth_authorized
     FLASK_DANCE_AVAILABLE = True
     print("✅ Google авторизация доступна")
 except ImportError as e:
@@ -17,23 +16,27 @@ except ImportError as e:
     google = None
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "spectrum-secret-key-2026")
+app.secret_key = os.environ.get("SECRET_KEY", "spectrum-secret-key-2026-black-blue")
 
-# Настройка Google OAuth
+# Настройка Google OAuth (ИСПРАВЛЕНО)
 if FLASK_DANCE_AVAILABLE:
     client_id = os.environ.get("GOOGLE_CLIENT_ID")
     client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
     
     if client_id and client_secret:
         try:
+            # ВАЖНО: явно указываем redirect_to и authorization_url
             google_bp = make_google_blueprint(
                 client_id=client_id,
                 client_secret=client_secret,
                 scope=["profile", "email"],
-                redirect_to="glavnaya"
+                redirect_to="glavnaya",  # Куда идти после входа
+                login_url="/login/google",  # URL для входа
+                authorized_url="/login/google/authorized"  # URL для редиректа
             )
             app.register_blueprint(google_bp, url_prefix="/login")
             print("✅ Google вход настроен")
+            print(f"   Redirect URI: https://spectrum-of-communication-3-0.onrender.com/login/google/authorized")
         except Exception as e:
             print(f"❌ Ошибка настройки Google: {e}")
     else:
@@ -46,10 +49,12 @@ def glavnaya():
     user_info = None
     if FLASK_DANCE_AVAILABLE and google:
         try:
+            # Проверяем авторизацию
             if hasattr(google, 'authorized') and google.authorized:
                 resp = google.get("/oauth2/v2/userinfo")
                 if resp and resp.ok:
                     user_info = resp.json()
+                    print(f"✅ Пользователь вошел: {user_info.get('email')}")
         except Exception as e:
             print(f"Ошибка получения данных пользователя: {e}")
     return render_template('glavnaya.html', user=user_info)
@@ -66,36 +71,39 @@ def kontakty():
     """Страница Контакты"""
     return render_template('kontakty.html')
 
+# Поддержка
+@app.route('/podderzhka')
+def podderzhka():
+    """Страница поддержки"""
+    return render_template('podderzhka.html')
+
 # Выход
 @app.route('/vyhod')
 def vyhod():
     """Выход из аккаунта"""
     if FLASK_DANCE_AVAILABLE and google:
         try:
-            return redirect(url_for("google.logout"))
+            # Правильный выход из Flask-Dance
+            from flask_dance.consumer import oauth_logout
+            oauth_logout(google)
         except:
-            pass
+            # Если не получается, просто забываем токен
+            if hasattr(google, 'token'):
+                google.token = None
     return redirect(url_for('glavnaya'))
 
-# Поддержка
-@app.route('/podderzhka')
-def podderzhka():
-    """Страница поддержки"""
-    return render_template('podderzhka.html', email="zenorvin@gmail.com")
-
-# Обработка формы обратной связи
-@app.route('/otpravka-soobscheniya', methods=['POST'])
-def otpravka_soobscheniya():
-    """Отправка сообщения (заглушка)"""
-    name = request.form.get('name', 'Аноним')
+# Обработка формы обратной связи (заглушка)
+@app.route('/otpravka', methods=['POST'])
+def otpravka():
+    email = request.form.get('email', '')
     message = request.form.get('message', '')
-    print(f"Сообщение от {name}: {message}")
-    return redirect(url_for('podderzhka', sent='true'))
+    print(f"Сообщение от {email}: {message}")
+    return redirect(url_for('podderzhka', status='sent'))
 
-# Проверка здоровья
-@app.route('/zdorovo')
-def zdorovo():
-    return {"status": "ok", "time": "работает"}
+# Проверка работоспособности
+@app.route('/health')
+def health():
+    return {"status": "ok", "python": sys.version.split()[0]}
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
