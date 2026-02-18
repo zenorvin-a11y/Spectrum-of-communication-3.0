@@ -18,7 +18,7 @@
         }
         
         .navbar {
-            background-color: #1a1e24;
+            background-color: {{ user_settings.menu_color if user_settings else '#1a1e24' }};
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
@@ -54,8 +54,9 @@
         
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
         
         .nav-links a {
