@@ -13,18 +13,19 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #0a0c10;
+            color: #e0e0e0;
             min-height: 100vh;
         }
         
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background-color: #0f1217;
+            border-bottom: 2px solid #1e88e5;
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 10px rgba(30, 136, 229, 0.2);
         }
         
         .nav-container {
@@ -46,15 +47,15 @@
             width: 50px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #667eea;
+            border: 2px solid #1e88e5;
         }
         
         .logo span {
             font-size: 1.5rem;
             font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1e88e5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .nav-links {
@@ -65,14 +66,14 @@
         
         .nav-links a {
             text-decoration: none;
-            color: #333;
+            color: #e0e0e0;
             font-weight: 500;
             transition: color 0.3s;
             position: relative;
         }
         
         .nav-links a:hover {
-            color: #667eea;
+            color: #1e88e5;
         }
         
         .nav-links a::after {
@@ -82,7 +83,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #1e88e5;
             transition: width 0.3s;
         }
         
@@ -97,42 +98,41 @@
         }
         
         .user-name {
-            color: #667eea;
+            color: #1e88e5;
             font-weight: 500;
         }
         
         .login-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background-color: #1e88e5;
+            color: #0a0c10;
             border: none;
             padding: 0.5rem 1.5rem;
-            border-radius: 25px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: 500;
-            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
             text-decoration: none;
         }
         
         .login-btn:hover {
+            background-color: #42a5f5;
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
         
         .logout-btn {
-            background: #ff4757;
-            color: white;
+            background-color: #424242;
+            color: #e0e0e0;
             border: none;
             padding: 0.5rem 1.5rem;
-            border-radius: 25px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: 500;
-            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 600;
+            transition: background-color 0.3s;
             text-decoration: none;
         }
         
         .logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.4);
+            background-color: #616161;
         }
         
         .main-content {
@@ -142,27 +142,36 @@
         }
         
         .hero {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            background-color: #0f1217;
+            border: 1px solid #1e88e5;
+            border-radius: 8px;
             padding: 3rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(30, 136, 229, 0.1);
             text-align: center;
-            backdrop-filter: blur(10px);
         }
         
         .hero h1 {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            color: #1e88e5;
             margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .hero p {
-            font-size: 1.2rem;
-            color: #666;
+            font-size: 1.1rem;
+            color: #b0b0b0;
             margin-bottom: 2rem;
             line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero .login-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
         }
         
         .features {
@@ -173,41 +182,43 @@
         }
         
         .feature-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
+            background-color: #0f1217;
+            border: 1px solid #1e88e5;
+            border-radius: 8px;
             padding: 2rem;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
-            backdrop-filter: blur(10px);
         }
         
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(30, 136, 229, 0.2);
         }
         
         .feature-card h3 {
-            color: #333;
+            color: #1e88e5;
             margin-bottom: 1rem;
+            font-size: 1.3rem;
         }
         
         .feature-card p {
-            color: #666;
+            color: #b0b0b0;
             line-height: 1.6;
         }
         
         .welcome-message {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem;
-            border-radius: 10px;
+            background-color: #0f1217;
+            border: 1px solid #1e88e5;
+            color: #e0e0e0;
+            padding: 1rem 2rem;
+            border-radius: 4px;
             margin-bottom: 2rem;
             text-align: center;
+        }
+        
+        .welcome-message h2 {
+            color: #1e88e5;
+            margin-bottom: 0.5rem;
         }
         
         @media (max-width: 768px) {
@@ -231,20 +242,20 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <img src="/static/logo.png" alt="Логотип">
-                <span>Спектр Общения</span>
+                <img src="/static/logo.png" alt="Логотип Спектр Общения">
+                <span>СПЕКТР ОБЩЕНИЯ</span>
             </div>
             <div class="nav-links">
-                <a href="/">Главная</a>
-                <a href="/o-nas">О нас</a>
-                <a href="/kontakty">Контакты</a>
-                <a href="/podderzhka">Поддержка</a>
+                <a href="/">ГЛАВНАЯ</a>
+                <a href="/o-nas">О НАС</a>
+                <a href="/kontakty">КОНТАКТЫ</a>
+                <a href="/podderzhka">ПОДДЕРЖКА</a>
                 <div class="user-menu">
                     {% if user %}
                         <span class="user-name">{{ user.name }}</span>
-                        <a href="/vyhod" class="logout-btn">Выйти</a>
+                        <a href="/vyhod" class="logout-btn">ВЫЙТИ</a>
                     {% else %}
-                        <a href="/login/google" class="login-btn">Войти через Google</a>
+                        <a href="/login/google" class="login-btn">ВОЙТИ ЧЕРЕЗ GOOGLE</a>
                     {% endif %}
                 </div>
             </div>
@@ -254,33 +265,30 @@
     <main class="main-content">
         {% if user %}
         <div class="welcome-message">
-            <h2>С возвращением, {{ user.name }}!</h2>
-            <p>Мы рады видеть вас снова</p>
+            <h2>С возвращением, {{ user.name }}</h2>
+            <p>Вы успешно вошли в систему</p>
         </div>
         {% endif %}
 
         <div class="hero">
-            <h1>Добро пожаловать в Спектр Общения</h1>
-            <p>Современная платформа для комфортного и безопасного общения. Присоединяйтесь к сообществу единомышленников!</p>
+            <h1>ДОБРО ПОЖАЛОВАТЬ В СПЕКТР ОБЩЕНИЯ</h1>
+            <p>Современная платформа для комфортного и безопасного общения. Присоединяйтесь к сообществу единомышленников.</p>
             {% if not user %}
-            <a href="/login/google" class="login-btn" style="display: inline-block; padding: 1rem 2.5rem;">Начать общение</a>
+            <a href="/login/google" class="login-btn">НАЧАТЬ ОБЩЕНИЕ</a>
             {% endif %}
         </div>
 
         <div class="features">
             <div class="feature-card">
-                <div class="feature-icon">💬</div>
-                <h3>Удобный чат</h3>
+                <h3>УДОБНЫЙ ЧАТ</h3>
                 <p>Интуитивно понятный интерфейс для приятного общения с друзьями</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3>Безопасность</h3>
+                <h3>БЕЗОПАСНОСТЬ</h3>
                 <p>Ваши данные надежно защищены современными технологиями шифрования</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🌍</div>
-                <h3>Доступность</h3>
+                <h3>ДОСТУПНОСТЬ</h3>
                 <p>Общайтесь с людьми со всего мира в любое время</p>
             </div>
         </div>
