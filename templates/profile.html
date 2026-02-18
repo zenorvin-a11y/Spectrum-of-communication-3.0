@@ -18,7 +18,7 @@
         }
         
         .navbar {
-            background-color: #1a1e24;
+            background-color: {{ settings.menu_color if settings else '#1a1e24' }};
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
@@ -54,8 +54,9 @@
         
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
         
         .nav-links a {
@@ -71,16 +72,15 @@
         }
         
         .main-content {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 2rem auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
         }
         
         .profile-card {
-            background-color: #1a1e24;
+            background-color: {{ settings.menu_color if settings else '#1a1e24' }};
             border-radius: 8px;
             padding: 2rem;
-            margin-bottom: 2rem;
         }
         
         .profile-header {
@@ -88,6 +88,7 @@
             align-items: center;
             gap: 2rem;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
         
         .profile-avatar {
@@ -95,6 +96,7 @@
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
+            border: 3px solid #4CAF50;
         }
         
         .profile-name {
@@ -108,7 +110,7 @@
         }
         
         .settings-section {
-            background-color: #0f1217;
+            background-color: rgba(0,0,0,0.2);
             border-radius: 8px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -122,7 +124,7 @@
         .setting-item {
             margin-bottom: 1rem;
             padding: 1rem;
-            background-color: #1a1e24;
+            background-color: rgba(0,0,0,0.3);
             border-radius: 4px;
         }
         
@@ -179,7 +181,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.8rem;
-            background-color: #1a1e24;
+            background-color: rgba(0,0,0,0.3);
             margin-bottom: 0.5rem;
             border-radius: 4px;
         }
@@ -202,15 +204,11 @@
                 flex-direction: column;
                 text-align: center;
             }
-            
-            .nav-links {
-                gap: 0.5rem;
-            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar" style="background-color: {{ settings.menu_color if settings else '#1a1e24' }}">
         <div class="nav-container">
             <div class="logo">
                 <img src="/static/logo.png" alt="Logo">
@@ -260,26 +258,26 @@
                 <div class="setting-item">
                     <label>Уведомления</label>
                     <input type="checkbox" id="notifications" {% if settings.notifications %}checked{% endif %}>
-                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Показывать уведомления о новых сообщениях</span>
+                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Показывать уведомления</span>
                 </div>
 
                 <div class="setting-item">
                     <label>Звук</label>
                     <input type="checkbox" id="sound" {% if settings.sound %}checked{% endif %}>
-                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Включить звуковые уведомления</span>
+                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Звуковые уведомления</span>
                 </div>
 
                 <div class="setting-item">
                     <label>Микрофон</label>
                     <input type="checkbox" id="microphone" {% if settings.microphone %}checked{% endif %}>
-                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Разрешить доступ к микрофону (голосовые сообщения)</span>
+                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Доступ к микрофону</span>
                 </div>
 
                 <button class="save-btn" onclick="saveSettings()">СОХРАНИТЬ НАСТРОЙКИ</button>
             </div>
 
             {% if blocked %}
-            <div class="settings-section blocked-users">
+            <div class="settings-section">
                 <h2>ЗАБЛОКИРОВАННЫЕ ПОЛЬЗОВАТЕЛИ</h2>
                 {% for email in blocked %}
                 <div class="blocked-item">
@@ -311,10 +309,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Настройки сохранены! Страница будет перезагружена.');
+                    alert('Настройки сохранены!');
                     location.reload();
-                } else {
-                    alert('Ошибка сохранения настроек');
                 }
             });
         }
