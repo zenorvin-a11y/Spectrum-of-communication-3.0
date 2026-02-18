@@ -3,13 +3,31 @@ import sys
 import json
 import datetime
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify
-from flask_socketio import SocketIO, emit, join_room, leave_room
 
-print("="*60)
-print("СПЕКТР ОБЩЕНИЯ - ФИНАЛЬНАЯ ВЕРСИЯ 2026 (Python 3.11)")
-print("="*60)
+print("="*70)
+print("СПЕКТР ОБЩЕНИЯ - МАКСИМАЛЬНАЯ ВЕРСИЯ 2026 (Python 3.11)")
+print("="*70)
 print(f"Python: {sys.version.split()[0]}")
 print(f"Дата запуска: {datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}")
+
+# Автовыбор драйвера для SocketIO
+try:
+    import eventlet
+    eventlet.monkey_patch()
+    ASYNC_MODE = 'eventlet'
+    print("✅ Используем eventlet (быстрый)")
+except ImportError:
+    try:
+        import gevent
+        from gevent import monkey
+        monkey.patch_all()
+        ASYNC_MODE = 'gevent'
+        print("✅ Используем gevent (стабильный)")
+    except ImportError:
+        ASYNC_MODE = 'threading'
+        print("⚠️ Используем threading (медленно, но работает)")
+
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 # Импорт Flask-Dance
 try:
@@ -23,19 +41,23 @@ except ImportError as e:
     google = None
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "spectrum-final-secret-2026")
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "spectrum-max-2026")
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_COOKIE_NAME'] = 'spectrum_session'
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 часа
 
-# Настройка SocketIO для Python 3.11
+# Настройка SocketIO с автовыбором
 socketio = SocketIO(app, 
                    cors_allowed_origins="*", 
-                   async_mode='eventlet',
+                   async_mode=ASYNC_MODE,
                    logger=False,
                    engineio_logger=False,
                    ping_timeout=60,
-                   ping_interval=25)
+                   ping_interval=25,
+                   max_http_buffer_size=1000000)
+
+print(f"✅ SocketIO настроен с режимом: {ASYNC_MODE}")
 
 # ========== НАСТРОЙКА GOOGLE OAuth ==========
 GOOGLE_AUTH_ENABLED = False
@@ -57,8 +79,8 @@ if FLASK_DANCE_AVAILABLE:
             )
             app.register_blueprint(google_bp, url_prefix="/login")
             print("✅ Google вход настроен")
-            GOOGLE_AUTH_ENABLED = True
             print(f"   Redirect URI: https://spectrum-of-communication-3-0.onrender.com/login/google/authorized")
+            GOOGLE_AUTH_ENABLED = True
             
             # Обработчик успешного входа
             @oauth_authorized.connect_via(google_bp)
@@ -79,11 +101,20 @@ if FLASK_DANCE_AVAILABLE:
                             'name': user_info.get('name'),
                             'email': email,
                             'avatar': user_info.get('picture'),
-                            'joined': datetime.datetime.now().strftime('%d.%m.%Y')
+                            'joined': datetime.datetime.now().strftime('%d.%m.%Y'),
+                            'settings': {
+                                'theme': 'dark',
+                                'notifications': True,
+                                'sound': True,
+                                'microphone': False,
+                                'menu_color': '#1a1e24',
+                                'text_color': '#ffffff'
+                            }
                         }
-                        # Добавляем в общий чат
-                        if email not in groups_db['main']['members']:
-                            groups_db['main']['members'].append(email)
+                        # Добавляем во все группы
+                        for group_id in groups_db:
+                            if email not in groups_db[group_id]['members']:
+                                groups_db[group_id]['members'].append(email)
                     
                     print(f"✅ Пользователь {email} вошёл в систему")
                 else:
@@ -94,8 +125,8 @@ if FLASK_DANCE_AVAILABLE:
     else:
         print("⚠️ Google ключи отсутствуют в окружении")
 
-# ========== БАЗА ДАННЫХ (ВРЕМЕННАЯ, В ПАМЯТИ) ==========
-users_db = {}
+# ========== БАЗА ДАННЫХ ==========
+users_db = {}  # {email: {...}}
 groups_db = {
     "main": {
         "name": "Общий чат",
@@ -120,9 +151,17 @@ groups_db = {
         "admins": [],
         "messages": [],
         "created": "2026-01-01"
+    },
+    "games": {
+        "name": "Игровой чат",
+        "description": "Обсуждение игр",
+        "members": [],
+        "admins": [],
+        "messages": [],
+        "created": "2026-01-01"
     }
 }
-blocked_users = {}
+blocked_users = {}  # {email: [blocked_email, ...]}
 
 # ========== УСЛОВИЯ ИСПОЛЬЗОВАНИЯ ==========
 TERMS_OF_SERVICE = """
@@ -160,14 +199,21 @@ TERMS_OF_SERVICE = """
 def glavnaya():
     """Главная страница с чатом"""
     user_info = session.get('user_info')
-    user_settings = session.get('user_settings', {
-        'theme': 'dark',
-        'notifications': True,
-        'sound': True,
-        'microphone': False,
-        'menu_color': '#1a1e24',
-        'text_color': '#ffffff'
-    })
+    
+    # Загружаем настройки пользователя
+    user_settings = users_db.get(user_info.get('email'), {}).get('settings') if user_info else None
+    if not user_settings and user_info:
+        user_settings = {
+            'theme': 'dark',
+            'notifications': True,
+            'sound': True,
+            'microphone': False,
+            'menu_color': '#1a1e24',
+            'text_color': '#ffffff'
+        }
+        if user_info.get('email') in users_db:
+            users_db[user_info['email']]['settings'] = user_settings
+    
     return render_template('glavnaya.html', 
                           user=user_info, 
                           settings=user_settings,
@@ -191,7 +237,7 @@ def profile():
     if not user_info:
         return redirect(url_for('glavnaya'))
     
-    user_settings = session.get('user_settings', {
+    user_settings = users_db.get(user_info.get('email'), {}).get('settings', {
         'theme': 'dark',
         'notifications': True,
         'sound': True,
@@ -216,19 +262,19 @@ def save_settings():
         return jsonify({"error": "Not logged in"}), 401
     
     settings = request.json
-    session['user_settings'] = settings
-    
     email = user_info.get('email')
+    
     if email not in users_db:
         users_db[email] = {}
     users_db[email]['settings'] = settings
+    session['user_settings'] = settings
     
     return jsonify({"success": True, "settings": settings})
 
 @app.route('/terms')
 def terms():
     """Страница с условиями использования"""
-    return render_template('terms.html', terms=TERMS_OF_SERVICE)
+    return render_template('terms.html', terms=TERMS_OF_SERVICE, year=2026)
 
 @app.route('/groups')
 def groups():
@@ -329,6 +375,13 @@ def handle_send_message(data):
     
     user_email = user_info.get('email')
     
+    # Проверяем блокировки
+    blocked_emails = blocked_users.get(user_email, [])
+    for blocked in blocked_emails:
+        if blocked in groups_db.get(group, {}).get('members', []):
+            emit('error', {'message': 'Вы не можете отправлять сообщения этому пользователю'}, room=request.sid)
+            return
+    
     # Сохраняем сообщение
     msg_data = {
         'user': user_info.get('name'),
@@ -364,4 +417,5 @@ def handle_typing(data):
 # ========== ЗАПУСК ==========
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    print(f"🚀 Запуск сервера на порту {port} с режимом {ASYNC_MODE}")
     socketio.run(app, host='0.0.0.0', port=port, debug=False)
