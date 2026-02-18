@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Группы - Спектр Общения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0c10;
+            color: #e0e0e0;
+        }
+        
+        .navbar {
+            background-color: #1a1e24;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+        
+        .logo span {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .group-card {
+            background-color: #1a1e24;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .group-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .group-name {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .group-description {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .group-stats {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Logo">
+                <span>СПЕКТР ОБЩЕНИЯ</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">ЧАТ</a>
+                <a href="/groups">ГРУППЫ</a>
+                <a href="/profile">ПРОФИЛЬ</a>
+                <a href="/terms">УСЛОВИЯ</a>
+                <a href="/vyhod">ВЫЙТИ</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <h1>ГРУППЫ</h1>
+        
+        <div class="groups-grid">
+            {% for group_id, group in groups.items() %}
+            <div class="group-card" onclick="location.href='/group/{{ group_id }}'">
+                <div class="group-name">{{ group.name }}</div>
+                <div class="group-description">{{ group.description }}</div>
+                <div class="group-stats">
+                    <span>{{ group.members|length }} участников</span>
+                    <span>Создана: {{ group.created }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
