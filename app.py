@@ -5,12 +5,13 @@ import datetime
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify
 
 print("="*70)
-print("СПЕКТР ОБЩЕНИЯ - МАКСИМАЛЬНАЯ ВЕРСИЯ 2026 (Python 3.11)")
+print("СПЕКТР ОБЩЕНИЯ - МАКСИМАЛЬНАЯ ВЕРСИЯ 2026")
 print("="*70)
 print(f"Python: {sys.version.split()[0]}")
 print(f"Дата запуска: {datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}")
 
 # Автовыбор драйвера для SocketIO
+ASYNC_MODE = 'threading'
 try:
     import eventlet
     eventlet.monkey_patch()
@@ -24,7 +25,6 @@ except ImportError:
         ASYNC_MODE = 'gevent'
         print("✅ Используем gevent (стабильный)")
     except ImportError:
-        ASYNC_MODE = 'threading'
         print("⚠️ Используем threading (медленно, но работает)")
 
 from flask_socketio import SocketIO, emit, join_room, leave_room
