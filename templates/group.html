@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ group.name }} - Спектр Общения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0c10;
+            color: #e0e0e0;
+        }
+        
+        .navbar {
+            background-color: #1a1e24;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+        
+        .logo span {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .group-header {
+            background-color: #1a1e24;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .group-header h1 {
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .group-header p {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .members-list {
+            background-color: #1a1e24;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .members-list h2 {
+            color: #4CAF50;
+            margin-bottom: 1rem;
+        }
+        
+        .member-item {
+            padding: 0.8rem;
+            background-color: #0f1217;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-badge {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Logo">
+                <span>СПЕКТР ОБЩЕНИЯ</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">ЧАТ</a>
+                <a href="/groups">ГРУППЫ</a>
+                <a href="/profile">ПРОФИЛЬ</a>
+                <a href="/terms">УСЛОВИЯ</a>
+                <a href="/vyhod">ВЫЙТИ</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="group-header">
+            <h1>{{ group.name }}</h1>
+            <p>{{ group.description }}</p>
+        </div>
+
+        <div class="members-list">
+            <h2>УЧАСТНИКИ ({{ group.members|length }})</h2>
+            {% for member in group.members %}
+            <div class="member-item">
+                <span>{{ member }}</span>
+                {% if member in group.admins %}
+                <span class="admin-badge">АДМИН</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="/groups" class="back-btn">← К СПИСКУ ГРУПП</a>
+    </main>
+</body>
+</html>
