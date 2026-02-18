@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Условия использования - Спектр Общения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0c10;
+            color: #e0e0e0;
+        }
+        
+        .navbar {
+            background-color: #1a1e24;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+        
+        .logo span {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        .main-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        
+        .terms-card {
+            background-color: #1a1e24;
+            border-radius: 8px;
+            padding: 2rem;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+        
+        .terms-card h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        
+        .terms-card p {
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .terms-card h3 {
+            color: #4CAF50;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .terms-date {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .terms-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Logo">
+                <span>СПЕКТР ОБЩЕНИЯ</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">ЧАТ</a>
+                <a href="/groups">ГРУППЫ</a>
+                <a href="/profile">ПРОФИЛЬ</a>
+                <a href="/terms">УСЛОВИЯ</a>
+                <a href="/vyhod">ВЫЙТИ</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="terms-card">
+            <h1>УСЛОВИЯ ИСПОЛЬЗОВАНИЯ</h1>
+            <div style="white-space: pre-wrap;">{{ terms }}</div>
+            <div class="terms-date">
+                Последнее обновление: 18 февраля 2026 года
+            </div>
+        </div>
+    </main>
+</body>
+</html>
