@@ -14,6 +14,7 @@ print(f"Дата запуска: {datetime.datetime.now().strftime('%d.%m.%Y %H:
 # Импорт Flask-Dance
 try:
     from flask_dance.contrib.google import make_google_blueprint, google
+    from flask_dance.consumer import oauth_authorized
     FLASK_DANCE_AVAILABLE = True
     print("✅ Google авторизация доступна")
 except ImportError as e:
@@ -24,12 +25,15 @@ except ImportError as e:
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "spectrum-final-secret-2026")
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
 
-# Настройка SocketIO для реального времени
-socketio = SocketIO(app, cors_allowed_origins="*")
+# Настройка SocketIO (исправлено для Python 3.11)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', logger=True, engineio_logger=True)
 
 # ========== НАСТРОЙКА GOOGLE OAuth ==========
 GOOGLE_AUTH_ENABLED = False
+google_bp = None
+
 if FLASK_DANCE_AVAILABLE:
     client_id = os.environ.get("GOOGLE_CLIENT_ID", "").strip()
     client_secret = os.environ.get("GOOGLE_CLIENT_SECRET", "").strip()
@@ -45,8 +49,40 @@ if FLASK_DANCE_AVAILABLE:
             app.register_blueprint(google_bp, url_prefix="/login")
             print("✅ Google вход настроен")
             GOOGLE_AUTH_ENABLED = True
+            
+            # Обработчик успешного входа
+            @oauth_authorized.connect_via(google_bp)
+            def google_logged_in(blueprint, token):
+                """Обработка успешного входа через Google"""
+                resp = blueprint.session.get("/oauth2/v2/userinfo")
+                if resp.ok:
+                    user_info = resp.json()
+                    email = user_info.get('email')
+                    
+                    # Сохраняем пользователя в сессии
+                    session['user_info'] = user_info
+                    session.permanent = True
+                    
+                    # Добавляем в базу если новый
+                    if email not in users_db:
+                        users_db[email] = {
+                            'name': user_info.get('name'),
+                            'email': email,
+                            'avatar': user_info.get('picture'),
+                            'joined': datetime.datetime.now().strftime('%d.%m.%Y')
+                        }
+                        # Добавляем в общий чат
+                        if email not in groups_db['main']['members']:
+                            groups_db['main']['members'].append(email)
+                    
+                    print(f"✅ Пользователь {email} вошёл в систему")
+                else:
+                    print(f"❌ Ошибка получения данных пользователя: {resp.status_code}")
+                    
         except Exception as e:
             print(f"❌ Ошибка настройки Google: {e}")
+    else:
+        print("⚠️ Google ключи отсутствуют в окружении")
 
 # ========== БАЗА ДАННЫХ (ВРЕМЕННАЯ, В ПАМЯТИ) ==========
 users_db = {}  # {user_id: {"name": "...", "email": "...", "avatar": "...", "settings": {...}}}
@@ -102,7 +138,9 @@ def glavnaya():
         'theme': 'dark',
         'notifications': True,
         'sound': True,
-        'microphone': False
+        'microphone': False,
+        'menu_color': '#1a1e24',
+        'text_color': '#ffffff'
     })
     return render_template('glavnaya.html', 
                           user=user_info, 
@@ -111,7 +149,7 @@ def glavnaya():
 
 @app.route('/login/google')
 def google_login():
-    if GOOGLE_AUTH_ENABLED and google:
+    if GOOGLE_AUTH_ENABLED and google_bp:
         return redirect(url_for("google.login"))
     return "Вход через Google временно недоступен", 503
 
@@ -132,7 +170,7 @@ def profile():
         'notifications': True,
         'sound': True,
         'microphone': False,
-        'menu_color': '#2c3e50',
+        'menu_color': '#1a1e24',
         'text_color': '#ffffff'
     })
     
@@ -229,35 +267,6 @@ def unblock_user():
     
     return jsonify({"success": True, "blocked": blocked_users.get(user_email, [])})
 
-# ========== ОБРАБОТЧИКИ ВХОДА ==========
-@oauth_authorized.connect_via(google_bp)
-def google_logged_in(blueprint, token):
-    """Обработка успешного входа через Google"""
-    resp = blueprint.session.get("/oauth2/v2/userinfo")
-    if resp.ok:
-        user_info = resp.json()
-        email = user_info.get('email')
-        
-        # Сохраняем пользователя в сессии
-        session['user_info'] = user_info
-        session.permanent = True
-        
-        # Добавляем в базу если новый
-        if email not in users_db:
-            users_db[email] = {
-                'name': user_info.get('name'),
-                'email': email,
-                'avatar': user_info.get('picture'),
-                'joined': datetime.datetime.now().strftime('%d.%m.%Y')
-            }
-            # Добавляем в общий чат
-            if email not in groups_db['main']['members']:
-                groups_db['main']['members'].append(email)
-        
-        print(f"✅ Пользователь {email} вошёл в систему")
-    else:
-        print(f"❌ Ошибка получения данных пользователя: {resp.status_code}")
-
 # ========== WEBSOCKET СОБЫТИЯ (ДЛЯ ЧАТА В РЕАЛЬНОМ ВРЕМЕНИ) ==========
 @socketio.on('connect')
 def handle_connect():
@@ -265,6 +274,8 @@ def handle_connect():
     if user_info:
         print(f"🔌 WebSocket подключён: {user_info.get('email')}")
         emit('connected', {'status': 'connected', 'user': user_info})
+    else:
+        print("🔌 WebSocket подключён (без авторизации)")
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -277,6 +288,7 @@ def handle_join_group(data):
     if user_info and user_info.get('email'):
         join_room(group)
         emit('group_joined', {'group': group, 'user': user_info.get('name')}, room=group)
+        print(f"👥 Пользователь {user_info.get('name')} присоединился к группе {group}")
 
 @socketio.on('send_message')
 def handle_send_message(data):
@@ -285,12 +297,15 @@ def handle_send_message(data):
         return
     
     group = data.get('group', 'main')
-    message = data.get('message', '')
+    message = data.get('message', '').strip()
+    
+    if not message:
+        return
     
     # Проверяем не заблокирован ли отправитель
     user_email = user_info.get('email')
     for blocked_user in blocked_users.get(user_email, []):
-        if blocked_user in groups_db[group]['members']:
+        if blocked_user in groups_db.get(group, {}).get('members', []):
             emit('blocked', {'message': 'Вы заблокировали этого пользователя'}, room=request.sid)
             return
     
@@ -300,21 +315,24 @@ def handle_send_message(data):
         'email': user_email,
         'message': message,
         'time': datetime.datetime.now().strftime('%H:%M'),
-        'avatar': user_info.get('picture')
+        'avatar': user_info.get('picture', '/static/logo.png')
     }
     
     if group not in groups_db:
         groups_db[group] = {
             'name': group,
+            'description': 'Новая группа',
             'members': [],
             'admins': [],
-            'messages': []
+            'messages': [],
+            'created': datetime.datetime.now().strftime('%Y-%m-%d')
         }
     
     groups_db[group]['messages'].append(msg_data)
     
     # Отправляем всем в группе
     emit('new_message', msg_data, room=group)
+    print(f"💬 Сообщение от {user_info.get('name')} в {group}: {message[:30]}...")
 
 @socketio.on('typing')
 def handle_typing(data):
@@ -328,4 +346,4 @@ def handle_typing(data):
 # ========== ЗАПУСК ==========
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    socketio.run(app, host='0.0.0.0', port=port, debug=False)
+    socketio.run(app, host='0.0.0.0', port=port, debug=False, allow_unsafe_werkzeug=True)
