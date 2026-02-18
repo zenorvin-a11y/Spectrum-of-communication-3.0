@@ -1,39 +1,20 @@
 import os
 import sys
+import traceback
 from flask import Flask, render_template, redirect, url_for, request
 
 print("="*50)
-print("ЗАПУСК ПРИЛОЖЕНИЯ")
+print("ЗАПУСК ПРИЛОЖЕНИЯ (ДИАГНОСТИЧЕСКАЯ ВЕРСИЯ)")
 print("="*50)
 
-# Проверка версии Python
 print(f"Python версия: {sys.version}")
-
-# Проверка переменных окружения (ВАЖНО!)
-print("-"*30)
-print("ПРОВЕРКА ПЕРЕМЕННЫХ:")
-print(f"Все переменные окружения: {list(os.environ.keys())}")
 print(f"GOOGLE_CLIENT_ID найден: {'GOOGLE_CLIENT_ID' in os.environ}")
 print(f"GOOGLE_CLIENT_SECRET найден: {'GOOGLE_CLIENT_SECRET' in os.environ}")
-
-if 'GOOGLE_CLIENT_ID' in os.environ:
-    client_id = os.environ.get('GOOGLE_CLIENT_ID')
-    print(f"GOOGLE_CLIENT_ID длина: {len(client_id)}")
-    print(f"GOOGLE_CLIENT_ID начало: {client_id[:20]}...")
-else:
-    print("⚠️ GOOGLE_CLIENT_ID ОТСУТСТВУЕТ!")
-
-if 'GOOGLE_CLIENT_SECRET' in os.environ:
-    client_secret = os.environ.get('GOOGLE_CLIENT_SECRET')
-    print(f"GOOGLE_CLIENT_SECRET длина: {len(client_secret)}")
-    print(f"GOOGLE_CLIENT_SECRET начало: {client_secret[:10]}...")
-else:
-    print("⚠️ GOOGLE_CLIENT_SECRET ОТСУТСТВУЕТ!")
-print("-"*30)
 
 # Импорт Flask-Dance
 try:
     from flask_dance.contrib.google import make_google_blueprint, google
+    from flask_dance.consumer import oauth_authorized
     FLASK_DANCE_AVAILABLE = True
     print("✅ Flask-Dance импортирован")
 except ImportError as e:
@@ -42,70 +23,82 @@ except ImportError as e:
     google = None
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "spectrum-secret-key-2026-black-blue")
+app.secret_key = os.environ.get("SECRET_KEY", "spectrum-secret-key-2026")
 
-# Настройка Google OAuth (ТОЛЬКО если есть ключи)
+# Настройка Google OAuth
 GOOGLE_AUTH_ENABLED = False
-
 if FLASK_DANCE_AVAILABLE:
-    client_id = os.environ.get("GOOGLE_CLIENT_ID")
-    client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
+    client_id = os.environ.get("GOOGLE_CLIENT_ID", "").strip()
+    client_secret = os.environ.get("GOOGLE_CLIENT_SECRET", "").strip()
     
     if client_id and client_secret:
         try:
             print("🔧 Настройка Google Blueprint...")
             google_bp = make_google_blueprint(
-                client_id=client_id.strip(),
-                client_secret=client_secret.strip(),
+                client_id=client_id,
+                client_secret=client_secret,
                 scope=["profile", "email"],
                 redirect_to="glavnaya"
             )
             app.register_blueprint(google_bp, url_prefix="/login")
-            print(f"✅ Google Blueprint зарегистрирован")
-            print(f"   Redirect URI: https://spectrum-of-communication-3-0.onrender.com/login/google/authorized")
+            print("✅ Google Blueprint зарегистрирован")
             GOOGLE_AUTH_ENABLED = True
         except Exception as e:
             print(f"❌ Ошибка настройки Google: {e}")
+            traceback.print_exc()
     else:
-        print("⚠️ Google ключи отсутствуют - вход отключён")
-else:
-    print("⚠️ Flask-Dance не доступен - вход отключён")
+        print("⚠️ Google ключи отсутствуют")
 
-print(f"🚀 Статус Google авторизации: {'ВКЛЮЧЕН' if GOOGLE_AUTH_ENABLED else 'ОТКЛЮЧЕН'}")
-print("="*50)
+print(f"🚀 Статус Google: {'ВКЛ' if GOOGLE_AUTH_ENABLED else 'ВЫКЛ'}")
+
+# Обработчик успешного входа
+@oauth_authorized.connect_via(google_bp)
+def google_logged_in(blueprint, token):
+    print("✅ УСПЕШНЫЙ ВХОД ЧЕРЕЗ GOOGLE!")
+    print(f"Токен получен: {token is not None}")
+    if token:
+        print(f"Token keys: {token.keys() if hasattr(token, 'keys') else 'no keys'}")
 
 @app.route('/')
 def glavnaya():
     """Главная страница"""
     user_info = None
-    if GOOGLE_AUTH_ENABLED and google and hasattr(google, 'authorized') and google.authorized:
-        try:
+    error_info = None
+    
+    try:
+        if GOOGLE_AUTH_ENABLED and google and hasattr(google, 'authorized') and google.authorized:
+            print("🔄 Получение данных пользователя...")
             resp = google.get("/oauth2/v2/userinfo")
+            print(f"Статус ответа: {resp.status_code if resp else 'No response'}")
+            
             if resp and resp.ok:
                 user_info = resp.json()
-                print(f"✅ Пользователь вошёл: {user_info.get('email')}")
-        except Exception as e:
-            print(f"❌ Ошибка получения данных пользователя: {e}")
-    return render_template('glavnaya.html', user=user_info)
+                print(f"✅ Данные получены: {user_info.get('email')}")
+            else:
+                error_info = f"Ошибка получения данных: {resp.status_code if resp else 'No response'}"
+                if resp and hasattr(resp, 'text'):
+                    print(f"Текст ошибки: {resp.text}")
+    except Exception as e:
+        error_info = f"Исключение: {str(e)}"
+        print(f"❌ Ошибка: {e}")
+        traceback.print_exc()
+    
+    return render_template('glavnaya.html', user=user_info, error=error_info)
 
 @app.route('/o-nas')
 def o_nas():
-    """Страница О нас"""
     return render_template('o-nas.html')
 
 @app.route('/kontakty')
 def kontakty():
-    """Страница Контакты"""
     return render_template('kontakty.html')
 
 @app.route('/podderzhka')
 def podderzhka():
-    """Страница поддержки"""
     return render_template('podderzhka.html')
 
 @app.route('/vyhod')
 def vyhod():
-    """Выход из аккаунта"""
     if GOOGLE_AUTH_ENABLED and google:
         try:
             from flask_dance.consumer import oauth_logout
@@ -120,11 +113,18 @@ def otpravka():
     email = request.form.get('email', '')
     message = request.form.get('message', '')
     print(f"Сообщение от {email}: {message}")
-    return redirect(url_for('podderzhka', status='sent'))
+    return redirect(url_for('podderzhka'))
 
 @app.route('/health')
 def health():
-    return {"status": "ok", "python": sys.version.split()[0]}
+    return {"status": "ok", "google": GOOGLE_AUTH_ENABLED}
+
+# Обработчик ошибок
+@app.errorhandler(500)
+def handle_500(error):
+    print(f"❌ 500 ERROR: {error}")
+    traceback.print_exc()
+    return "Внутренняя ошибка сервера. Проверьте логи.", 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
