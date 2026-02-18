@@ -13,14 +13,14 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #0a0c10;
+            color: #e0e0e0;
             min-height: 100vh;
         }
         
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background-color: #0f1217;
+            border-bottom: 2px solid #1e88e5;
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
@@ -46,15 +46,14 @@
             width: 50px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #667eea;
+            border: 2px solid #1e88e5;
         }
         
         .logo span {
             font-size: 1.5rem;
             font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1e88e5;
+            text-transform: uppercase;
         }
         
         .nav-links {
@@ -65,14 +64,14 @@
         
         .nav-links a {
             text-decoration: none;
-            color: #333;
+            color: #e0e0e0;
             font-weight: 500;
             transition: color 0.3s;
             position: relative;
         }
         
         .nav-links a:hover {
-            color: #667eea;
+            color: #1e88e5;
         }
         
         .nav-links a::after {
@@ -82,7 +81,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #1e88e5;
             transition: width 0.3s;
         }
         
@@ -97,161 +96,63 @@
         }
         
         .support-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            background-color: #0f1217;
+            border: 1px solid #1e88e5;
+            border-radius: 8px;
             padding: 3rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
         }
         
         .support-card h1 {
             font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1e88e5;
             margin-bottom: 1rem;
             text-align: center;
+            text-transform: uppercase;
         }
         
         .support-subtitle {
             text-align: center;
-            color: #666;
+            color: #b0b0b0;
             font-size: 1.1rem;
             margin-bottom: 3rem;
         }
         
-        .support-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        .support-item {
+        .support-info {
             text-align: center;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            transition: transform 0.3s;
+            padding: 3rem;
+            background-color: #0a0c10;
+            border: 1px dashed #1e88e5;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
-        .support-item:hover {
-            transform: translateY(-5px);
-        }
-        
-        .support-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .support-item h3 {
-            color: #333;
-            margin-bottom: 1rem;
-        }
-        
-        .support-item p {
-            color: #666;
+        .support-info p {
+            color: #b0b0b0;
             margin-bottom: 1.5rem;
-            line-height: 1.6;
+            font-size: 1.2rem;
         }
         
         .support-email {
-            color: #667eea;
+            display: inline-block;
+            color: #1e88e5;
+            font-size: 2rem;
+            font-weight: bold;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
+            border-bottom: 2px solid #1e88e5;
+            padding-bottom: 5px;
+            margin-top: 1rem;
         }
         
         .support-email:hover {
-            text-decoration: underline;
+            color: #42a5f5;
+            border-bottom-color: #42a5f5;
         }
         
-        .faq-section {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 2rem;
+        .response-time {
             margin-top: 2rem;
-        }
-        
-        .faq-section h2 {
-            color: #333;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        
-        .faq-item {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-        
-        .faq-question {
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        
-        .faq-answer {
             color: #666;
-            line-height: 1.6;
-        }
-        
-        .contact-form {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .contact-form h2 {
-            color: #333;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .form-group textarea {
-            height: 120px;
-            resize: vertical;
-        }
-        
-        .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .submit-btn:hover {
-            transform: translateY(-2px);
+            font-size: 0.9rem;
         }
         
         @media (max-width: 768px) {
@@ -260,9 +161,8 @@
                 gap: 1rem;
             }
             
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
+            .support-email {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -271,92 +171,28 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <img src="/static/logo.png" alt="Логотип">
-                <span>Спектр Общения</span>
+                <img src="/static/logo.png" alt="Логотип Спектр Общения">
+                <span>СПЕКТР ОБЩЕНИЯ</span>
             </div>
             <div class="nav-links">
-                <a href="/">Главная</a>
-                <a href="/o-nas">О нас</a>
-                <a href="/kontakty">Контакты</a>
-                <a href="/podderzhka">Поддержка</a>
+                <a href="/">ГЛАВНАЯ</a>
+                <a href="/o-nas">О НАС</a>
+                <a href="/kontakty">КОНТАКТЫ</a>
+                <a href="/podderzhka">ПОДДЕРЖКА</a>
             </div>
         </div>
     </nav>
 
     <main class="main-content">
         <div class="support-card">
-            <h1>Центр поддержки</h1>
-            <p class="support-subtitle">Мы всегда готовы помочь вам!</p>
+            <h1>ЦЕНТР ПОДДЕРЖКИ</h1>
+            <p class="support-subtitle">Мы всегда готовы помочь вам</p>
             
-            <div class="support-grid">
-                <div class="support-item">
-                    <div class="support-icon">📧</div>
-                    <h3>Электронная почта</h3>
-                    <p>Напишите нам, и мы ответим в течение 2 часов</p>
-                    <a href="mailto:{{ email }}" class="support-email">{{ email }}</a>
-                </div>
-                
-                <div class="support-item">
-                    <div class="support-icon">💬</div>
-                    <h3>Чат поддержки</h3>
-                    <p>Онлайн-консультанты работают круглосуточно</p>
-                    <a href="#" class="support-email">Открыть чат</a>
-                </div>
-                
-                <div class="support-item">
-                    <div class="support-icon">📚</div>
-                    <h3>База знаний</h3>
-                    <p>Ответы на частые вопросы и инструкции</p>
-                    <a href="#" class="support-email">Перейти к статьям</a>
-                </div>
-            </div>
-            
-            <div class="faq-section">
-                <h2>Часто задаваемые вопросы</h2>
-                
-                <div class="faq-item">
-                    <div class="faq-question">Как восстановить доступ к аккаунту?</div>
-                    <div class="faq-answer">Для восстановления доступа используйте функцию "Забыли пароль" на странице входа или напишите нам на почту с указанием вашего email.</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">Как удалить свой аккаунт?</div>
-                    <div class="faq-answer">Напишите запрос на удаление на почту support@spectrum.ru с вашего зарегистрированного email. Аккаунт будет удален в течение 24 часов.</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">Как сменить адрес электронной почты?</div>
-                    <div class="faq-answer">Вы можете изменить email в настройках профиля после входа в аккаунт.</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">Как связаться с администрацией?</div>
-                    <div class="faq-answer">Для связи с администрацией используйте email {{ email }} или форму обратной связи ниже.</div>
-                </div>
-            </div>
-            
-            <div class="contact-form">
-                <h2>Форма обратной связи</h2>
-                <form action="/otpravka-soobscheniya" method="post">
-                    <div class="form-group">
-                        <label for="name">Ваше имя</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Ваш email</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Сообщение</label>
-                        <textarea id="message" name="message" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">Отправить сообщение</button>
-                </form>
-            </div>
-            
-            <div style="text-align: center; margin-top: 2rem; color: #666;">
-                <p>📞 Телефон поддержки: <a href="tel:+78001234567" style="color: #667eea;">8 (800) 123-45-67</a></p>
-                <p style="margin-top: 0.5rem;">🕒 Время работы: 24/7</p>
+            <div class="support-info">
+                <p>Если у вас возникли вопросы или проблемы,</p>
+                <p>напишите нам на почту:</p>
+                <a href="mailto:zenorvin@gmail.com" class="support-email">zenorvin@gmail.com</a>
+                <p class="response-time">Среднее время ответа: до 2 часов</p>
             </div>
         </div>
     </main>
