@@ -1,24 +1,23 @@
 import os
 import sys
-from flask import Flask, render_template, redirect, url_for, g
+from flask import Flask, render_template, redirect, url_for, request
 
-print(f"=== SPECTRUM APPLICATION ===")
-print(f"Python version: {sys.version}")
+print(f"=== СПЕКТР ОБЩЕНИЯ === Версия 2.0")
+print(f"Python: {sys.version.split()[0]}")
 
 # Импорт Flask-Dance с защитой
 try:
     from flask_dance.contrib.google import make_google_blueprint, google
-    from flask_dance.consumer import oauth_authorized, oauth_before_login
-    from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
+    from flask_dance.consumer import oauth_authorized
     FLASK_DANCE_AVAILABLE = True
-    print("✅ Flask-Dance imported successfully")
+    print("✅ Google авторизация доступна")
 except ImportError as e:
     FLASK_DANCE_AVAILABLE = False
-    print(f"⚠️ Flask-Dance not available: {e}")
+    print(f"⚠️ Google авторизация недоступна: {e}")
     google = None
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "default-secret-key-for-python-3143")
+app.secret_key = os.environ.get("SECRET_KEY", "spectrum-secret-key-2026")
 
 # Настройка Google OAuth
 if FLASK_DANCE_AVAILABLE:
@@ -27,77 +26,76 @@ if FLASK_DANCE_AVAILABLE:
     
     if client_id and client_secret:
         try:
-            # Создаём blueprint с явным указанием настроек
-            google_blueprint = make_google_blueprint(
+            google_bp = make_google_blueprint(
                 client_id=client_id,
                 client_secret=client_secret,
                 scope=["profile", "email"],
-                redirect_to="home"  # Куда перенаправлять после входа
+                redirect_to="glavnaya"
             )
-            app.register_blueprint(google_blueprint, url_prefix="/login")
-            print("✅ Google Blueprint registered for Python 3.14.3")
+            app.register_blueprint(google_bp, url_prefix="/login")
+            print("✅ Google вход настроен")
         except Exception as e:
-            print(f"❌ Failed to register Google Blueprint: {e}")
+            print(f"❌ Ошибка настройки Google: {e}")
     else:
-        print("⚠️ Google credentials not set in environment variables")
-else:
-    print("⚠️ Google login disabled")
+        print("⚠️ Ключи Google не найдены в окружении")
 
+# Главная страница
 @app.route('/')
-def home():
-    """Главная страница"""
+def glavnaya():
+    """Главная страница сайта"""
     user_info = None
-    
-    # Безопасная проверка авторизации
     if FLASK_DANCE_AVAILABLE and google:
         try:
-            # Проверяем, авторизован ли пользователь
             if hasattr(google, 'authorized') and google.authorized:
                 resp = google.get("/oauth2/v2/userinfo")
                 if resp and resp.ok:
                     user_info = resp.json()
-                    print(f"✅ User logged in: {user_info.get('email')}")
-                else:
-                    print("⚠️ Failed to get user info")
-            else:
-                print("ℹ️ User not logged in")
         except Exception as e:
-            print(f"❌ Error in home route: {e}")
-    
-    return render_template('index.html', user=user_info)
+            print(f"Ошибка получения данных пользователя: {e}")
+    return render_template('glavnaya.html', user=user_info)
 
-@app.route('/about')
-def about():
+# О нас
+@app.route('/o-nas')
+def o_nas():
     """Страница О нас"""
-    return render_template('about.html')
+    return render_template('o-nas.html')
 
-@app.route('/contact')
-def contact():
+# Контакты
+@app.route('/kontakty')
+def kontakty():
     """Страница Контакты"""
-    return render_template('contact.html')
+    return render_template('kontakty.html')
 
-@app.route('/logout')
-def logout():
-    """Выход из системы"""
+# Выход
+@app.route('/vyhod')
+def vyhod():
+    """Выход из аккаунта"""
     if FLASK_DANCE_AVAILABLE and google:
         try:
-            # Безопасный выход
-            if hasattr(google, 'authorized') and google.authorized:
-                return redirect(url_for("google.logout"))
-        except Exception as e:
-            print(f"❌ Error during logout: {e}")
-    return redirect(url_for('home'))
+            return redirect(url_for("google.logout"))
+        except:
+            pass
+    return redirect(url_for('glavnaya'))
 
-@app.route('/health')
-def health():
-    """Проверка работоспособности"""
-    return {"status": "ok", "python": sys.version.split()[0]}
+# Поддержка
+@app.route('/podderzhka')
+def podderzhka():
+    """Страница поддержки"""
+    return render_template('podderzhka.html', email="zenorvin@gmail.com")
 
-# Обработчик ошибок для отладки
-@app.errorhandler(500)
-def internal_error(error):
-    print(f"❌ 500 Error: {error}")
-    return "Internal Server Error - Check logs", 500
+# Обработка формы обратной связи
+@app.route('/otpravka-soobscheniya', methods=['POST'])
+def otpravka_soobscheniya():
+    """Отправка сообщения (заглушка)"""
+    name = request.form.get('name', 'Аноним')
+    message = request.form.get('message', '')
+    print(f"Сообщение от {name}: {message}")
+    return redirect(url_for('podderzhka', sent='true'))
+
+# Проверка здоровья
+@app.route('/zdorovo')
+def zdorovo():
+    return {"status": "ok", "time": "работает"}
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
