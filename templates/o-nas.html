@@ -13,18 +13,19 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #0a0c10;
+            color: #e0e0e0;
             min-height: 100vh;
         }
         
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background-color: #0f1217;
+            border-bottom: 2px solid #1e88e5;
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 10px rgba(30, 136, 229, 0.2);
         }
         
         .nav-container {
@@ -46,15 +47,15 @@
             width: 50px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #667eea;
+            border: 2px solid #1e88e5;
         }
         
         .logo span {
             font-size: 1.5rem;
             font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1e88e5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .nav-links {
@@ -65,14 +66,14 @@
         
         .nav-links a {
             text-decoration: none;
-            color: #333;
+            color: #e0e0e0;
             font-weight: 500;
             transition: color 0.3s;
             position: relative;
         }
         
         .nav-links a:hover {
-            color: #667eea;
+            color: #1e88e5;
         }
         
         .nav-links a::after {
@@ -82,7 +83,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #1e88e5;
             transition: width 0.3s;
         }
         
@@ -97,111 +98,68 @@
         }
         
         .about-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            background-color: #0f1217;
+            border: 1px solid #1e88e5;
+            border-radius: 8px;
             padding: 3rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(30, 136, 229, 0.1);
         }
         
         .about-card h1 {
             font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1e88e5;
             margin-bottom: 2rem;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .about-section {
             margin-bottom: 2rem;
             padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            background-color: #0a0c10;
+            border-left: 4px solid #1e88e5;
+            border-radius: 0 4px 4px 0;
         }
         
         .about-section h2 {
-            color: #333;
+            color: #1e88e5;
             margin-bottom: 1rem;
             font-size: 1.5rem;
         }
         
         .about-section p {
-            color: #666;
+            color: #b0b0b0;
             line-height: 1.8;
             font-size: 1.1rem;
         }
         
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+        .contact-info {
+            text-align: center;
+            padding: 2rem;
+            background-color: #0a0c10;
+            border: 1px dashed #1e88e5;
+            border-radius: 8px;
             margin-top: 2rem;
         }
         
-        .team-member {
-            text-align: center;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            transition: transform 0.3s;
+        .contact-info p {
+            color: #b0b0b0;
+            margin-bottom: 1rem;
         }
         
-        .team-member:hover {
-            transform: translateY(-5px);
-        }
-        
-        .member-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0 auto 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
+        .contact-email {
+            color: #1e88e5;
+            font-size: 1.3rem;
             font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid #1e88e5;
+            padding-bottom: 2px;
         }
         
-        .member-name {
-            color: #333;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .member-role {
-            color: #667eea;
-            font-size: 0.9rem;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-        
-        .stat-item {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
-            color: white;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
+        .contact-email:hover {
+            color: #42a5f5;
+            border-bottom-color: #42a5f5;
         }
         
         @media (max-width: 768px) {
@@ -215,8 +173,8 @@
                 justify-content: center;
             }
             
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .about-card h1 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -225,74 +183,40 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <img src="/static/logo.png" alt="Логотип">
-                <span>Спектр Общения</span>
+                <img src="/static/logo.png" alt="Логотип Спектр Общения">
+                <span>СПЕКТР ОБЩЕНИЯ</span>
             </div>
             <div class="nav-links">
-                <a href="/">Главная</a>
-                <a href="/o-nas">О нас</a>
-                <a href="/kontakty">Контакты</a>
-                <a href="/podderzhka">Поддержка</a>
+                <a href="/">ГЛАВНАЯ</a>
+                <a href="/o-nas">О НАС</a>
+                <a href="/kontakty">КОНТАКТЫ</a>
+                <a href="/podderzhka">ПОДДЕРЖКА</a>
             </div>
         </div>
     </nav>
 
     <main class="main-content">
         <div class="about-card">
-            <h1>О нашем проекте</h1>
-            
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">2024</div>
-                    <div class="stat-label">Год основания</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">1000+</div>
-                    <div class="stat-label">Пользователей</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Поддержка</div>
-                </div>
-            </div>
+            <h1>О ПРОЕКТЕ</h1>
             
             <div class="about-section">
-                <h2>Наша миссия</h2>
+                <h2>НАША МИССИЯ</h2>
                 <p>Спектр Общения — это современная платформа, созданная для того, чтобы сделать общение в интернете комфортным, безопасным и доступным каждому. Мы верим, что технологии должны объединять людей, а не создавать барьеры.</p>
             </div>
             
             <div class="about-section">
-                <h2>Что мы предлагаем</h2>
+                <h2>ЧТО МЫ ПРЕДЛАГАЕМ</h2>
                 <p>Наша платформа предоставляет удобные инструменты для общения: личные сообщения, групповые чаты, обмен медиафайлами и многое другое. Мы постоянно работаем над улучшением функционала и добавлением новых возможностей.</p>
             </div>
             
             <div class="about-section">
-                <h2>Наши ценности</h2>
+                <h2>НАШИ ЦЕННОСТИ</h2>
                 <p>Мы ставим во главу угла безопасность пользователей, конфиденциальность данных и уважение к каждому участнику сообщества. Модерация и современные технологии защиты обеспечивают комфортную атмосферу для всех.</p>
             </div>
             
-            <h2 style="text-align: center; margin: 2rem 0 1rem;">Наша команда</h2>
-            <div class="team-grid">
-                <div class="team-member">
-                    <div class="member-avatar">А</div>
-                    <div class="member-name">Алексей</div>
-                    <div class="member-role">Основатель</div>
-                </div>
-                <div class="team-member">
-                    <div class="member-avatar">М</div>
-                    <div class="member-name">Мария</div>
-                    <div class="member-role">Дизайнер</div>
-                </div>
-                <div class="team-member">
-                    <div class="member-avatar">Д</div>
-                    <div class="member-name">Дмитрий</div>
-                    <div class="member-role">Разработчик</div>
-                </div>
-            </div>
-            
-            <div class="about-section" style="margin-top: 2rem;">
-                <h2>Свяжитесь с нами</h2>
-                <p>Если у вас есть вопросы или предложения, пишите нам на <a href="mailto:zenorvin@gmail.com" style="color: #667eea; text-decoration: none; font-weight: 600;">zenorvin@gmail.com</a>. Мы всегда рады обратной связи!</p>
+            <div class="contact-info">
+                <p>По всем вопросам обращайтесь:</p>
+                <a href="mailto:zenorvin@gmail.com" class="contact-email">zenorvin@gmail.com</a>
             </div>
         </div>
     </main>
