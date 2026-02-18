@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты - Спектр Общения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
+        }
+        
+        .logo span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        .contacts-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .contacts-card h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .contact-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .contact-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .contact-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-item h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-item p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-item a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .map-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .map-container h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .map-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 300px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Логотип">
+                <span>Спектр Общения</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">Главная</a>
+                <a href="/o-nas">О нас</a>
+                <a href="/kontakty">Контакты</a>
+                <a href="/podderzhka">Поддержка</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="contacts-card">
+            <h1>Свяжитесь с нами</h1>
+            
+            <div class="contacts-grid">
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <h3>Email</h3>
+                    <p>Основная почта:</p>
+                    <p><a href="mailto:zenorvin@gmail.com">zenorvin@gmail.com</a></p>
+                    <p>Техническая поддержка:</p>
+                    <p><a href="mailto:support@spectrum.ru">support@spectrum.ru</a></p>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <h3>Телефон</h3>
+                    <p>Основной:</p>
+                    <p><a href="tel:+79991234567">+7 (999) 123-45-67</a></p>
+                    <p>Техподдержка:</p>
+                    <p><a href="tel:+78001234567">8 (800) 123-45-67</a></p>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <h3>Адрес</h3>
+                    <p>Главный офис:</p>
+                    <p>Москва, ул. Программистов, д. 1</p>
+                    <p>Технический центр:</p>
+                    <p>Санкт-Петербург, пр. Разработчиков, д. 42</p>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <h2>Мы на карте</h2>
+                <div class="map-placeholder">
+                    <div>
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">📍</div>
+                        <div>Москва, ул. Программистов, 1</div>
+                        <div style="margin-top: 1rem;">(Интерактивная карта появится позже)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 style="text-align: center; margin: 2rem 0 1rem;">Мы в соцсетях</h2>
+            <div class="social-links">
+                <a href="#" class="social-link">📘</a>
+                <a href="#" class="social-link">📷</a>
+                <a href="#" class="social-link">🐦</a>
+                <a href="#" class="social-link">💬</a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; color: #666;">
+                <p>Часы работы поддержки: круглосуточно, без выходных</p>
+                <p style="margin-top: 0.5rem;">Среднее время ответа: до 2 часов</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
