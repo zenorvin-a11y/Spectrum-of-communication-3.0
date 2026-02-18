@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - Спектр Общения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0c10;
+            color: #e0e0e0;
+        }
+        
+        .navbar {
+            background-color: #1a1e24;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+        
+        .logo span {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .profile-card {
+            background-color: #1a1e24;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            color: #4CAF50;
+        }
+        
+        .profile-email {
+            color: rgba(255,255,255,0.7);
+            margin-top: 0.5rem;
+        }
+        
+        .settings-section {
+            background-color: #0f1217;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-section h2 {
+            color: #4CAF50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .setting-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #1a1e24;
+            border-radius: 4px;
+        }
+        
+        .setting-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .setting-item input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .setting-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        .setting-item select {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #0f1217;
+            color: white;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+        }
+        
+        .save-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            width: 100%;
+        }
+        
+        .save-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .blocked-users {
+            margin-top: 2rem;
+        }
+        
+        .blocked-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            background-color: #1a1e24;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .unblock-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .unblock-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-links {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Logo">
+                <span>СПЕКТР ОБЩЕНИЯ</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">ЧАТ</a>
+                <a href="/groups">ГРУППЫ</a>
+                <a href="/profile">ПРОФИЛЬ</a>
+                <a href="/terms">УСЛОВИЯ</a>
+                <a href="/vyhod">ВЫЙТИ</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="profile-card">
+            <div class="profile-header">
+                <img src="{{ user.picture if user.picture else '/static/logo.png' }}" alt="Avatar" class="profile-avatar">
+                <div>
+                    <h1 class="profile-name">{{ user.name }}</h1>
+                    <p class="profile-email">{{ user.email }}</p>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>НАСТРОЙКИ ОФОРМЛЕНИЯ</h2>
+                
+                <div class="setting-item">
+                    <label>Тема оформления</label>
+                    <select id="theme">
+                        <option value="dark" {% if settings.theme == 'dark' %}selected{% endif %}>Тёмная</option>
+                        <option value="light" {% if settings.theme == 'light' %}selected{% endif %}>Светлая</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label>Цвет меню</label>
+                    <input type="color" id="menuColor" value="{{ settings.menu_color if settings.menu_color else '#1a1e24' }}">
+                </div>
+
+                <div class="setting-item">
+                    <label>Цвет текста</label>
+                    <input type="color" id="textColor" value="{{ settings.text_color if settings.text_color else '#ffffff' }}">
+                </div>
+
+                <div class="setting-item">
+                    <label>Уведомления</label>
+                    <input type="checkbox" id="notifications" {% if settings.notifications %}checked{% endif %}>
+                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Показывать уведомления о новых сообщениях</span>
+                </div>
+
+                <div class="setting-item">
+                    <label>Звук</label>
+                    <input type="checkbox" id="sound" {% if settings.sound %}checked{% endif %}>
+                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Включить звуковые уведомления</span>
+                </div>
+
+                <div class="setting-item">
+                    <label>Микрофон</label>
+                    <input type="checkbox" id="microphone" {% if settings.microphone %}checked{% endif %}>
+                    <span style="color: rgba(255,255,255,0.7); margin-left: 0.5rem;">Разрешить доступ к микрофону (голосовые сообщения)</span>
+                </div>
+
+                <button class="save-btn" onclick="saveSettings()">СОХРАНИТЬ НАСТРОЙКИ</button>
+            </div>
+
+            {% if blocked %}
+            <div class="settings-section blocked-users">
+                <h2>ЗАБЛОКИРОВАННЫЕ ПОЛЬЗОВАТЕЛИ</h2>
+                {% for email in blocked %}
+                <div class="blocked-item">
+                    <span>{{ email }}</span>
+                    <button class="unblock-btn" onclick="unblockUser('{{ email }}')">РАЗБЛОКИРОВАТЬ</button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        function saveSettings() {
+            const settings = {
+                theme: document.getElementById('theme').value,
+                menu_color: document.getElementById('menuColor').value,
+                text_color: document.getElementById('textColor').value,
+                notifications: document.getElementById('notifications').checked,
+                sound: document.getElementById('sound').checked,
+                microphone: document.getElementById('microphone').checked
+            };
+            
+            fetch('/save-settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(settings)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Настройки сохранены! Страница будет перезагружена.');
+                    location.reload();
+                } else {
+                    alert('Ошибка сохранения настроек');
+                }
+            });
+        }
+
+        function unblockUser(email) {
+            fetch('/unblock-user', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email: email})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Пользователь разблокирован');
+                    location.reload();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
