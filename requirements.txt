@@ -6,4 +6,4 @@ python-socketio==5.11.0
 eventlet==0.33.3
 oauthlib==3.2.2
 requests-oauthlib==2.0.0
-setuptools==75.8.0
+setuptools==68.2.2
