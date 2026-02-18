@@ -7,7 +7,7 @@
         .user-info {
             background-color: #333;
             color: white;
-            padding: 10px;
+            padding: 15px;
             text-align: right;
         }
         .user-info a {
@@ -32,7 +32,6 @@
         .content {
             text-align: center;
             margin-top: 50px;
-            padding: 20px;
         }
         .logo {
             width: 150px;
@@ -41,31 +40,25 @@
     </style>
 </head>
 <body>
-
-    <!-- БЛОК С ИНФОРМАЦИЕЙ О ПОЛЬЗОВАТЕЛЕ -->
     <div class="user-info">
-        {% if user.is_authenticated %}
-            <span>Привет, {{ user.name }}!</span>
-            <a href="/logout">Выйти</a>
+        {% if user %}
+            <span>Hello, {{ user.name }}!</span>
+            <a href="/logout">Logout</a>
         {% else %}
-            <a href="/login/google">Войти через Google</a>
+            <a href="/login/google">Login with Google</a>
         {% endif %}
     </div>
 
-    <!-- МЕНЮ -->
     <div class="menu">
-        <a href="/">Главная</a>
-        <a href="/about">О нас</a>
-        <a href="/contact">Контакты</a>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
     </div>
 
-    <!-- СОДЕРЖИМОЕ -->
     <div class="content">
         <img src="/static/logo.png" alt="Logo" class="logo">
         <h1>Spectrum of communication</h1>
-        <p>Добро пожаловать, мудак!</p>
-        <p>Теперь можно входить через Google.</p>
+        <p>Welcome back, motherfucker!</p>
     </div>
-
 </body>
 </html>
