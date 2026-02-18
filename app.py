@@ -18,14 +18,7 @@ try:
     ASYNC_MODE = 'eventlet'
     print("✅ Используем eventlet (быстрый)")
 except ImportError:
-    try:
-        import gevent
-        from gevent import monkey
-        monkey.patch_all()
-        ASYNC_MODE = 'gevent'
-        print("✅ Используем gevent (стабильный)")
-    except ImportError:
-        print("⚠️ Используем threading (медленно, но работает)")
+    print("⚠️ Используем threading (медленно, но работает)")
 
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
