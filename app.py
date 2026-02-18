@@ -6,7 +6,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, j
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 print("="*60)
-print("СПЕКТР ОБЩЕНИЯ - ФИНАЛЬНАЯ ВЕРСИЯ 2026")
+print("СПЕКТР ОБЩЕНИЯ - ФИНАЛЬНАЯ ВЕРСИЯ 2026 (Python 3.11)")
 print("="*60)
 print(f"Python: {sys.version.split()[0]}")
 print(f"Дата запуска: {datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}")
@@ -26,9 +26,16 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "spectrum-final-secret-2026")
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_COOKIE_NAME'] = 'spectrum_session'
 
-# Настройка SocketIO (исправлено для Python 3.11)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', logger=True, engineio_logger=True)
+# Настройка SocketIO для Python 3.11
+socketio = SocketIO(app, 
+                   cors_allowed_origins="*", 
+                   async_mode='eventlet',
+                   logger=False,
+                   engineio_logger=False,
+                   ping_timeout=60,
+                   ping_interval=25)
 
 # ========== НАСТРОЙКА GOOGLE OAuth ==========
 GOOGLE_AUTH_ENABLED = False
@@ -44,11 +51,14 @@ if FLASK_DANCE_AVAILABLE:
                 client_id=client_id,
                 client_secret=client_secret,
                 scope=["openid", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
-                redirect_to="glavnaya"
+                redirect_to="glavnaya",
+                login_url="/login/google",
+                authorized_url="/login/google/authorized"
             )
             app.register_blueprint(google_bp, url_prefix="/login")
             print("✅ Google вход настроен")
             GOOGLE_AUTH_ENABLED = True
+            print(f"   Redirect URI: https://spectrum-of-communication-3-0.onrender.com/login/google/authorized")
             
             # Обработчик успешного входа
             @oauth_authorized.connect_via(google_bp)
@@ -85,7 +95,7 @@ if FLASK_DANCE_AVAILABLE:
         print("⚠️ Google ключи отсутствуют в окружении")
 
 # ========== БАЗА ДАННЫХ (ВРЕМЕННАЯ, В ПАМЯТИ) ==========
-users_db = {}  # {user_id: {"name": "...", "email": "...", "avatar": "...", "settings": {...}}}
+users_db = {}
 groups_db = {
     "main": {
         "name": "Общий чат",
@@ -94,9 +104,25 @@ groups_db = {
         "admins": [],
         "messages": [],
         "created": "2026-01-01"
+    },
+    "random": {
+        "name": "Случайный чат",
+        "description": "Для свободного общения",
+        "members": [],
+        "admins": [],
+        "messages": [],
+        "created": "2026-01-01"
+    },
+    "tech": {
+        "name": "Технический чат",
+        "description": "Обсуждение технологий и помощь",
+        "members": [],
+        "admins": [],
+        "messages": [],
+        "created": "2026-01-01"
     }
 }
-blocked_users = {}  # {user_id: [blocked_user_id, ...]}
+blocked_users = {}
 
 # ========== УСЛОВИЯ ИСПОЛЬЗОВАНИЯ ==========
 TERMS_OF_SERVICE = """
@@ -192,7 +218,6 @@ def save_settings():
     settings = request.json
     session['user_settings'] = settings
     
-    # Сохраняем в базу (в реальном проекте здесь будет запись в БД)
     email = user_info.get('email')
     if email not in users_db:
         users_db[email] = {}
@@ -267,7 +292,7 @@ def unblock_user():
     
     return jsonify({"success": True, "blocked": blocked_users.get(user_email, [])})
 
-# ========== WEBSOCKET СОБЫТИЯ (ДЛЯ ЧАТА В РЕАЛЬНОМ ВРЕМЕНИ) ==========
+# ========== WEBSOCKET СОБЫТИЯ ==========
 @socketio.on('connect')
 def handle_connect():
     user_info = session.get('user_info')
@@ -302,12 +327,7 @@ def handle_send_message(data):
     if not message:
         return
     
-    # Проверяем не заблокирован ли отправитель
     user_email = user_info.get('email')
-    for blocked_user in blocked_users.get(user_email, []):
-        if blocked_user in groups_db.get(group, {}).get('members', []):
-            emit('blocked', {'message': 'Вы заблокировали этого пользователя'}, room=request.sid)
-            return
     
     # Сохраняем сообщение
     msg_data = {
@@ -329,8 +349,6 @@ def handle_send_message(data):
         }
     
     groups_db[group]['messages'].append(msg_data)
-    
-    # Отправляем всем в группе
     emit('new_message', msg_data, room=group)
     print(f"💬 Сообщение от {user_info.get('name')} в {group}: {message[:30]}...")
 
@@ -346,4 +364,4 @@ def handle_typing(data):
 # ========== ЗАПУСК ==========
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    socketio.run(app, host='0.0.0.0', port=port, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=port, debug=False)
